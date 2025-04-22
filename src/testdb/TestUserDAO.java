@@ -11,17 +11,21 @@ public class TestUserDAO {
 	public void select(String name,String password){
 	DBConnector db = new DBConnector();
 	Connection con = db.getConnection();
+	//DB接続への準備
 
 	String sql ="select * from test_table where user_name=? and password=?";
+	//テーブル内のデータをsqlに代入。?は「その都度違う」データを入れるということ
 	try {
 		PreparedStatement ps = con.prepareStatement(sql);
 	ps.setString(1, name);
 	ps.setString (2, password);
 	ResultSet rs=ps.executeQuery();
+	//executeQuery();は実行メソッド、必ずResultSetが返ってくる
 	if (rs.next()) {
 		System.out.println(rs.getString("user_name"));
 		System.out.println(rs.getString("password"));
 		}
+	//if (rs.next())はデータが存在する限り1行ずつ移動すること
 	} catch (SQLException e ) {
 		e.printStackTrace();
 		}
@@ -31,4 +35,29 @@ public class TestUserDAO {
 			e.printStackTrace();
 			}
 	}
+
+
+	public void selectAll(){
+		DBConnector db = new DBConnector();
+		Connection con = db.getConnection();
+
+		String sql ="select * from test_table";
+		try {
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rs=ps.executeQuery();
+
+		while (rs.next()) {
+			System.out.println(rs.getString("user_name"));
+			System.out.println(rs.getString("password"));
+			}
+		//while (rs.next())は１行ずつ実行していき、データがなくなり次第終了ということ
+		} catch (SQLException e ) {
+			e.printStackTrace();
+			}
+		try {
+			con.close() ;
+			} catch (SQLException e ) {
+				e.printStackTrace();
+				}
+		}
 	}
